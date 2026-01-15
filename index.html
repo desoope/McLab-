@@ -47,35 +47,20 @@
                         <span class="badge" id="display-role">Role</span>
                     </div>
                 </div>
-                <div class="balance-container">
-                    <span id="display-balance">0</span> <i class="fa-solid fa-coins"></i>
-                </div>
-                <div id="admin-notify" class="notify-btn hidden" onclick="showScreen('admin-orders')">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="dot hidden" id="notify-dot"></span>
+                <div class="header-right">
+                    <div class="balance-container">
+                        <span id="display-balance">0</span> <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <div id="admin-notify" class="notify-btn hidden" onclick="showScreen('admin-orders')">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="dot hidden" id="notify-dot"></span>
+                    </div>
                 </div>
             </header>
 
-            <section id="shop-screen" class="content-screen active">
-                <div class="shop-grid" id="shop-container"></div>
-            </section>
-
-            <section id="users-screen" class="content-screen hidden">
-                <h2>Персонал проекта</h2>
-                <div class="user-list" id="users-list-container"></div>
-            </section>
-
-            <section id="logs-screen" class="content-screen hidden">
-                <h2>История операций</h2>
-                <div class="logs-list" id="logs-container"></div>
-            </section>
-
-            <section id="admin-orders-screen" class="content-screen hidden">
-                <h2>Ожидают выдачи</h2>
-                <div class="orders-list" id="orders-container"></div>
-            </section>
-
             <nav class="glass-nav">
+                <div class="desktop-logo">McSkill Shop</div>
+
                 <button class="nav-btn active" onclick="showScreen('shop')">
                     <i class="fa-solid fa-store"></i>
                     <span>Магазин</span>
@@ -88,10 +73,35 @@
                     <i class="fa-solid fa-scroll"></i>
                     <span>Логи</span>
                 </button>
-                <button class="nav-btn logout" onclick="logout()">
+                
+                <div class="spacer"></div> <button class="nav-btn logout" onclick="logout()">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Выход</span>
                 </button>
             </nav>
+
+            <div class="content-wrapper">
+                
+                <section id="shop-screen" class="content-screen active">
+                    <div id="shop-container"></div>
+                </section>
+
+                <section id="users-screen" class="content-screen hidden">
+                    <h2 class="screen-title">Персонал проекта</h2>
+                    <div class="user-list" id="users-list-container"></div>
+                </section>
+
+                <section id="logs-screen" class="content-screen hidden">
+                    <h2 class="screen-title">История операций</h2>
+                    <div class="logs-list" id="logs-container"></div>
+                </section>
+
+                <section id="admin-orders-screen" class="content-screen hidden">
+                    <h2 class="screen-title">Ожидают выдачи</h2>
+                    <div class="orders-list" id="orders-container"></div>
+                </section>
+            </div>
+
         </main>
     </div>
 
