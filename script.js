@@ -1,6 +1,5 @@
-// --- 1. CONFIG & DATA (Настройки и Данные) ---
+// --- 1. CONFIG & DATA ---
 
-// Список разрешенных ников, их роли и права админа
 const WHITELIST = {
     'nikita2007558': { role: 'Гл. Модератор', isAdmin: true },
     'DesOope': { role: 'Модератор', isAdmin: true },
@@ -9,12 +8,11 @@ const WHITELIST = {
     'Sashaiolh': { role: 'НеАдмин', isAdmin: false },
     'BobrKu': { role: 'Модератор', isAdmin: false },
     'Yamix': { role: 'Модератор', isAdmin: false },
-    'GintaRus': { role: 'Дизайнер', isAdmin: true },
+    'GintaRus': { role: 'Дизайнер', isAdmin: false },
     'MrMaiK': { role: 'Строитель', isAdmin: false },
     '_artifev_': { role: 'Модератор', isAdmin: false }
 };
 
-// Полный список товаров с категориями
 const ITEMS = [
     // --- Привилегии ---
     { id: 'priv_mod', name: '[Mod] на месяц', price: 270, img: 'priv_mod.png', category: 'privilege' },
@@ -41,7 +39,6 @@ const ITEMS = [
     
     // --- Draconic Evolution ---
     { id: 'staff_dragon', name: 'Посох дракона', price: 450, img: 'draconic_staff.png', category: 'draconic' },
-    { id: 'uucs', name: 'UUCS', price: 200, img: 'uucs.png', category: 'draconic' },
     { id: 'drac_chest', name: 'Драконий нагрудник', price: 200, img: 'drac_chest.png', category: 'draconic' },
     { id: 'drac_pick', name: 'Драконья кирка', price: 150, img: 'drac_pick.png', category: 'draconic' },
     { id: 'drac_bow', name: 'Лук дракона', price: 130, img: 'drac_bow.png', category: 'draconic' },
@@ -61,6 +58,7 @@ const ITEMS = [
     { id: 'wyv_pick', name: 'Кирка виверны', price: 50, img: 'wyv_pick.png', category: 'wyvern' },
     
     // --- Техника и Разное ---
+    { id: 'uucs', name: 'UUCS', price: 200, img: 'uucs.png', category: 'tech' }, /* <-- ПЕРЕНЕСЕНО СЮДА */
     { id: 'space_cable', name: 'Пространственный кабель', price: 90, img: 'cable.png', category: 'tech' },
     { id: 'sigil', name: 'Стабильный сигил', price: 50, img: 'sigil.png', category: 'tech' },
     { id: 'converter', name: 'Конвертер', price: 50, img: 'converter.png', category: 'tech' },
@@ -73,7 +71,6 @@ const ITEMS = [
     { id: 'light_source', name: 'Источник света', price: 3, img: 'light.png', category: 'tech' },
 ];
 
-// Заголовки категорий (HTML разрешен для иконок)
 const CATEGORY_TITLES = {
     'privilege': '<i class="fa-solid fa-crown"></i> Привилегии',
     'currency': '<i class="fa-solid fa-coins"></i> Валюта и Кейсы',
@@ -83,12 +80,9 @@ const CATEGORY_TITLES = {
     'tech': '<i class="fa-solid fa-microchip"></i> Техника и Разное'
 };
 
-// Порядок отображения категорий на экране
 const CATEGORY_ORDER = ['privilege', 'currency', 'draconic', 'wyvern', 'tech', 'cosmetic'];
 
-// --- 2. FAKE DATA GENERATORS (Генераторы данных) ---
-// Эти функции запускаются только если база данных (LocalStorage) пустая
-
+// --- 2. FAKE DATA GENERATORS ---
 function getInitialData() {
     return [
         { nick: 'Sashaiolh', role: 'НеАдмин', isAdmin: false, balance: 89250, pass: '123' },
@@ -120,7 +114,7 @@ function getFakeLogs() {
     ];
 }
 
-// --- 3. DATABASE CLASS (Работа с данными) ---
+// --- 3. DATABASE CLASS ---
 class DB {
     constructor() {
         if (!localStorage.getItem('mcskill_users')) {
@@ -217,7 +211,7 @@ let currentUser = null;
 let selectedItem = null;
 let selectedUserForEdit = null;
 
-// --- 4. AUTHENTICATION (Вход/Выход) ---
+// --- 4. AUTH & NAVIGATION ---
 const authScreen = document.getElementById('auth-screen');
 const mainApp = document.getElementById('main-app');
 const isRegMode = { value: false };
@@ -264,8 +258,6 @@ function logout() {
     document.getElementById('auth-pass').value = '';
 }
 
-// --- 5. APPLICATION LOGIC (Логика приложения) ---
-
 function initApp() {
     authScreen.classList.add('hidden');
     mainApp.classList.remove('hidden');
@@ -298,6 +290,7 @@ function showScreen(screenId) {
 
     document.getElementById(screenId + '-screen').classList.remove('hidden');
     
+    // Подсветка кнопок меню
     if(screenId === 'shop') document.querySelectorAll('.nav-btn')[0].classList.add('active');
     if(screenId === 'users') document.querySelectorAll('.nav-btn')[1].classList.add('active');
     if(screenId === 'logs') document.querySelectorAll('.nav-btn')[2].classList.add('active');
@@ -307,9 +300,8 @@ function showScreen(screenId) {
     if (screenId === 'logs') renderLogs();
 }
 
-// --- 6. RENDERERS (Отрисовка) ---
+// --- 5. RENDERERS ---
 
-// Отрисовка Магазина (Исправленная версия с категориями)
 function renderShop() {
     const container = document.getElementById('shop-container');
     container.innerHTML = '';
@@ -318,21 +310,18 @@ function renderShop() {
         const catItems = ITEMS.filter(item => item.category === catKey);
         
         if (catItems.length > 0) {
-            // Заголовок категории
             const header = document.createElement('div');
             header.className = 'category-header';
             header.innerHTML = CATEGORY_TITLES[catKey] || catKey;
             
-            // Сетка товаров для этой категории
             const grid = document.createElement('div');
             grid.className = 'shop-grid';
             
             catItems.forEach(item => {
                 const el = document.createElement('div');
                 el.className = 'item-card';
-                // Вставлена заглушка для изображений, если файла нет
                 el.innerHTML = `
-                    <img src="images/${item.img}" onerror="this.src='https://placehold.co/150/1a1a1a/FFF?text=No+Img'" class="item-img">
+                    <img src="images/${item.img}" onerror="this.src='https://placehold.co/200/1a1a1a/FFF?text=IMG'" class="item-img">
                     <div class="item-name">${item.name}</div>
                     <div class="item-price">${item.price} Б</div>
                 `;
@@ -346,12 +335,10 @@ function renderShop() {
     });
 }
 
-// Отрисовка Пользователей
 function renderUsers() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
     
-    // Сортировка: Админы -> Остальные по балансу
     const sortedUsers = [...db.users].sort((a, b) => {
         if (a.isAdmin && !b.isAdmin) return -1;
         if (!a.isAdmin && b.isAdmin) return 1;
@@ -364,7 +351,7 @@ function renderUsers() {
         
         let actions = '';
         if (currentUser.isAdmin) {
-             actions = `<button class="btn-edit" onclick="openBalanceModal('${user.nick}')"><i class="fa-solid fa-pen"></i></button>`;
+             actions = `<button class="btn-primary" style="width:auto; padding: 5px 15px; margin:0;" onclick="openBalanceModal('${user.nick}')">Баланс</button>`;
         }
 
         let roleColor = '#aaa';
@@ -375,9 +362,9 @@ function renderUsers() {
 
         el.innerHTML = `
             <div>
-                <div style="font-weight:700; font-size: 15px;">${user.nick}</div>
-                <div style="font-size:12px; margin-top:2px;">
-                    <span style="color:${roleColor}">${user.role}</span> | ${user.balance} Б
+                <div style="font-weight:700; font-size: 16px;">${user.nick}</div>
+                <div style="font-size:13px; margin-top:4px; opacity:0.8;">
+                    <span style="color:${roleColor}">${user.role}</span> | <span style="color:#ffd700">${user.balance} Б</span>
                 </div>
             </div>
             ${actions}
@@ -386,7 +373,6 @@ function renderUsers() {
     });
 }
 
-// Отрисовка Заявок (Админ)
 function renderOrders() {
     if (!currentUser.isAdmin) return;
     const container = document.getElementById('orders-container');
@@ -405,13 +391,12 @@ function renderOrders() {
                 <div style="color: #ffd700; font-weight:bold">${order.item}</div>
                 <div style="font-size:12px;">Покупатель: ${order.nick}</div>
             </div>
-            <button class="btn-primary" style="width:auto; padding:8px 16px; margin:0; font-size:13px;" onclick="confirmOrder(${order.id})">Выдать</button>
+            <button class="btn-primary" style="width:auto; padding:8px 16px; margin:0;" onclick="confirmOrder(${order.id})">Выдать</button>
         `;
         container.appendChild(el);
     });
 }
 
-// Отрисовка Логов
 function renderLogs() {
     const container = document.getElementById('logs-container');
     container.innerHTML = '';
@@ -434,7 +419,7 @@ function renderLogs() {
     });
 }
 
-// --- 7. ACTIONS & MODALS (Действия и Модальные окна) ---
+// --- 6. ACTIONS ---
 
 function openBuyModal(item) {
     selectedItem = item;
