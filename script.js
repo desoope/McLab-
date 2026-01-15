@@ -2,32 +2,46 @@
 
 // Список разрешенных ников и их роли
 const WHITELIST = {
-    'nikita2007558': { role: 'Главный Модератор', isAdmin: true },
-    'DesOope': { role: 'Модератор', isAdmin: true },
+    'nikita2007558': { role: 'Гл. Модератор', isAdmin: true },
+    'DesOope': { role: 'Модератор', isAdmin: true }, 
+    '4epB9lk': { role: 'Тех. Админ', isAdmin: true },
+    'Noise71': { role: 'Куратор', isAdmin: true },
+    
+    // Обычные сотрудники
+    'Sashaiolh': { role: 'НеАдмин', isAdmin: false },
     'BobrKu': { role: 'Модератор', isAdmin: false },
     'Yamix': { role: 'Модератор', isAdmin: false },
-    'GintaRus': { role: 'Гейм Дизайнер', isAdmin: false }
+    'GintaRus': { role: 'Дизайнер', isAdmin: false },
+    'MrMaiK': { role: 'Строитель', isAdmin: false },
+    '_artifev_': { role: 'Модератор', isAdmin: false }
 };
 
 // Товары
 const ITEMS = [
+    // Привилегии
     { id: 'priv_mod', name: '[Mod] на месяц', price: 270, img: 'priv_mod.png' },
     { id: 'priv_deluxe', name: '[Deluxe] на месяц', price: 185, img: 'priv_deluxe.png' },
     { id: 'priv_grand', name: '[Grand] на месяц', price: 130, img: 'priv_grand.png' },
     { id: 'priv_gold', name: '[Gold] на месяц', price: 95, img: 'priv_gold.png' },
     { id: 'priv_vip', name: '[Vip] на месяц', price: 50, img: 'priv_vip.png' },
     { id: 'priv_pro', name: '[Pro] на месяц', price: 20, img: 'priv_pro.png' },
+    
+    // Валюта и кейсы
     { id: 'money_100', name: '100 эмов', price: 15, img: 'ems.png' },
     { id: 'case_dragon', name: 'Dragon кейс', price: 40, img: 'case_dragon.png' },
     { id: 'case_sticker', name: 'Sticker кейс', price: 20, img: 'case_sticker.png' },
     { id: 'case_chance', name: 'Chance кейс', price: 20, img: 'case_chance.png' },
     { id: 'case_emerald', name: 'Изумрудный кейс', price: 8, img: 'case_emerald.png' },
+    
+    // Кастомизация
     { id: 'custom_perm', name: 'Кастомизация (навсегда)', price: 850, img: 'custom.png' },
     { id: 'skin_crystal', name: 'Чистый кристалл (скин)', price: 650, img: 'skin1.png' },
     { id: 'skin_void', name: 'Камень бездны (скин)', price: 650, img: 'skin2.png' },
     { id: 'staff_dragon', name: 'Посох дракона', price: 450, img: 'draconic_staff.png' },
     { id: 'skin_moon', name: 'Сияние Луны (скин)', price: 300, img: 'skin3.png' },
     { id: 'skin_vampire', name: 'Объятия вампира (скин)', price: 300, img: 'skin4.png' },
+    
+    // Draconic Evolution
     { id: 'uucs', name: 'UUCS', price: 200, img: 'uucs.png' },
     { id: 'drac_chest', name: 'Драконий нагрудник', price: 200, img: 'drac_chest.png' },
     { id: 'drac_pick', name: 'Драконья кирка', price: 150, img: 'drac_pick.png' },
@@ -40,6 +54,8 @@ const ITEMS = [
     { id: 'drac_helm', name: 'Драконий шлем', price: 100, img: 'drac_helm.png' },
     { id: 'drac_legs', name: 'Драконьи поножи', price: 100, img: 'drac_legs.png' },
     { id: 'drac_boots', name: 'Драконьи ботинки', price: 100, img: 'drac_boots.png' },
+    
+    // Wyvern & Misc
     { id: 'space_cable', name: 'Пространственный кабель', price: 90, img: 'cable.png' },
     { id: 'wyv_chest', name: 'Нагрудник виверны', price: 60, img: 'wyv_chest.png' },
     { id: 'sigil', name: 'Стабильный сигил', price: 50, img: 'sigil.png' },
@@ -57,12 +73,53 @@ const ITEMS = [
     { id: 'light_source', name: 'Источник света', price: 3, img: 'light.png' },
 ];
 
-// --- SIMULATED DATABASE (LocalStorage) ---
+// --- FAKE DATA GENERATOR (Запускается если база пустая) ---
+function getInitialData() {
+    return [
+        { nick: 'Sashaiolh', role: 'НеАдмин', isAdmin: false, balance: 89250, pass: '123' },
+        { nick: '4epB9lk', role: 'Тех. Админ', isAdmin: true, balance: 0, pass: '123' },
+        { nick: 'Noise71', role: 'Куратор', isAdmin: true, balance: 4001, pass: '123' },
+        { nick: 'nikita2007558', role: 'Гл. Модератор', isAdmin: true, balance: 352, pass: '123' },
+        { nick: 'GintaRus', role: 'Дизайнер', isAdmin: false, balance: 0, pass: '123' },
+        { nick: 'MrMaiK', role: 'Строитель', isAdmin: false, balance: 315, pass: '123' },
+        { nick: 'Yamix', role: 'Модератор', isAdmin: false, balance: 885, pass: '123' },
+        { nick: '_artifev_', role: 'Модератор', isAdmin: false, balance: 160, pass: '123' },
+        { nick: 'DesOope', role: 'Модератор', isAdmin: true, balance: 620, pass: '123' },
+        { nick: 'BobrKu', role: 'Модератор', isAdmin: false, balance: 1280, pass: '123' }
+    ];
+}
+
+function getFakeLogs() {
+    const now = new Date();
+    const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+    const dayBefore = new Date(now); dayBefore.setDate(now.getDate() - 2);
+
+    return [
+        { actor: 'DesOope', text: 'DesOope купил Ультрафиолетовые очки за 50', time: now.toLocaleString() },
+        { actor: 'nikita2007558', text: 'Изменил баланс Yamix: +200. Причина: Работа по форуму', time: now.toLocaleString() },
+        { actor: 'BobrKu', text: 'BobrKu купил Драконий шлем за 100', time: yesterday.toLocaleString() },
+        { actor: 'nikita2007558', text: 'Изменил баланс Noise71: +1000. Причина: Зарплата за месяц', time: yesterday.toLocaleString() },
+        { actor: 'nikita2007558', text: 'Изменил баланс Sashaiolh: +50000. Причина: Победа в глобальном ивенте', time: dayBefore.toLocaleString() },
+        { actor: 'Yamix', text: 'Yamix купил [Gold] на месяц за 95', time: dayBefore.toLocaleString() },
+        { actor: 'nikita2007558', text: 'Изменил баланс BobrKu: +120. Причина: Премия за онлайн', time: dayBefore.toLocaleString() }
+    ];
+}
+
+// --- DATABASE CLASS ---
 class DB {
     constructor() {
-        this.users = JSON.parse(localStorage.getItem('mcskill_users')) || [];
-        this.logs = JSON.parse(localStorage.getItem('mcskill_logs')) || [];
-        this.pendingOrders = JSON.parse(localStorage.getItem('mcskill_orders')) || [];
+        // Проверяем, есть ли данные. Если нет - грузим фейковые.
+        if (!localStorage.getItem('mcskill_users')) {
+            console.log("Initializing Fake Data...");
+            this.users = getInitialData();
+            this.logs = getFakeLogs();
+            this.pendingOrders = [];
+            this.save();
+        } else {
+            this.users = JSON.parse(localStorage.getItem('mcskill_users'));
+            this.logs = JSON.parse(localStorage.getItem('mcskill_logs')) || [];
+            this.pendingOrders = JSON.parse(localStorage.getItem('mcskill_orders')) || [];
+        }
     }
 
     save() {
@@ -73,7 +130,7 @@ class DB {
 
     register(nick, pass) {
         if (!WHITELIST[nick]) return { success: false, msg: 'Ник не в белом списке!' };
-        if (this.users.find(u => u.nick === nick)) return { success: false, msg: 'Уже зарегистрирован!' };
+        if (this.users.find(u => u.nick === nick)) return { success: false, msg: 'Уже зарегистрирован! (Попробуй войти)' };
         
         const newUser = {
             nick: nick,
@@ -119,7 +176,7 @@ class DB {
             date: new Date().toLocaleString()
         };
         this.pendingOrders.push(order);
-        this.logAction('System', `${nick} купил ${item.name} за ${item.price}. Ожидает выдачи.`);
+        this.logAction(nick, `${nick} купил ${item.name} за ${item.price}`);
         this.save();
         return { success: true };
     }
@@ -130,7 +187,6 @@ class DB {
         
         const order = this.pendingOrders[index];
         this.pendingOrders.splice(index, 1);
-        this.logAction(adminNick, `Подтвердил выдачу: ${order.item} для ${order.nick}`);
         this.save();
     }
 
@@ -184,7 +240,7 @@ function handleAuth() {
             currentUser = user;
             initApp();
         } else {
-            alert('Неверный логин или пароль (или пользователь не существует)');
+            alert('Неверный логин или пароль (попробуйте 123 для предустановленных)');
         }
     }
 }
@@ -202,7 +258,7 @@ function initApp() {
     authScreen.classList.add('hidden');
     mainApp.classList.remove('hidden');
     
-    // Set Header Info
+    // Header Info
     document.getElementById('display-nick').textContent = currentUser.nick;
     document.getElementById('display-role').textContent = currentUser.role;
     updateBalanceDisplay();
@@ -215,33 +271,24 @@ function initApp() {
     }
 
     renderShop();
-    renderUsers(); // Prepare list just in case
+    renderUsers(); 
     renderLogs();
     checkNotifications();
     
-    showScreen('shop'); // Default
+    showScreen('shop'); 
 }
 
 function updateBalanceDisplay() {
-    // Refresh user data from DB
     currentUser = db.getUser(currentUser.nick);
     document.getElementById('display-balance').textContent = currentUser.balance;
 }
 
 function showScreen(screenId) {
-    // Hide all
     document.querySelectorAll('.content-screen').forEach(s => s.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-    // Admin checks
-    if (screenId === 'users' || screenId === 'admin-orders') {
-        // Allow users to see users list? Prompt says "Page with list of all users". Assuming read-only for non-admins.
-        // But logic for balance editing is admin only.
-    }
-
     document.getElementById(screenId + '-screen').classList.remove('hidden');
     
-    // Update nav active state (mapping buttons to screens)
     if(screenId === 'shop') document.querySelectorAll('.nav-btn')[0].classList.add('active');
     if(screenId === 'users') document.querySelectorAll('.nav-btn')[1].classList.add('active');
     if(screenId === 'logs') document.querySelectorAll('.nav-btn')[2].classList.add('active');
@@ -259,9 +306,8 @@ function renderShop() {
     ITEMS.forEach(item => {
         const el = document.createElement('div');
         el.className = 'item-card';
-        // Placeholder image URL logic or generic
         el.innerHTML = `
-            <img src="images/${item.img}" onerror="this.src='https://via.placeholder.com/80?text=Item'" class="item-img">
+            <img src="images/${item.img}" onerror="this.src='https://via.placeholder.com/100?text=Item'" class="item-img">
             <div class="item-name">${item.name}</div>
             <div class="item-price">${item.price} Б</div>
         `;
@@ -282,7 +328,7 @@ function confirmPurchase() {
     const res = db.createOrder(currentUser.nick, selectedItem);
     
     if (res.success) {
-        alert('Покупка совершена! Ожидайте выдачи старшим составом.');
+        alert('Покупка совершена! Ожидайте выдачи.');
         updateBalanceDisplay();
         closeModal();
     } else {
@@ -291,25 +337,39 @@ function confirmPurchase() {
     }
 }
 
-// --- USERS & ADMIN ---
+// --- USERS ---
 function renderUsers() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
     
-    db.users.forEach(user => {
+    // Сортировка: Админы -> Остальные по балансу
+    const sortedUsers = [...db.users].sort((a, b) => {
+        if (a.isAdmin && !b.isAdmin) return -1;
+        if (!a.isAdmin && b.isAdmin) return 1;
+        return b.balance - a.balance;
+    });
+
+    sortedUsers.forEach(user => {
         const el = document.createElement('div');
         el.className = 'user-row';
         
         let actions = '';
-        // Only specific admins can edit balance
         if (currentUser.isAdmin) {
              actions = `<button class="btn-edit" onclick="openBalanceModal('${user.nick}')"><i class="fa-solid fa-pen"></i></button>`;
         }
 
+        let roleColor = '#aaa';
+        if (user.role.includes('Гл')) roleColor = '#ff453a';
+        if (user.role.includes('Тех')) roleColor = '#bf5af2';
+        if (user.role.includes('Куратор')) roleColor = '#0a84ff';
+        if (user.role === 'НеАдмин') roleColor = '#32d74b';
+
         el.innerHTML = `
             <div>
-                <div style="font-weight:bold">${user.nick}</div>
-                <div style="font-size:12px; opacity:0.7">${user.role} | ${user.balance} Б</div>
+                <div style="font-weight:700; font-size: 15px;">${user.nick}</div>
+                <div style="font-size:12px; margin-top:2px;">
+                    <span style="color:${roleColor}">${user.role}</span> | ${user.balance} Б
+                </div>
             </div>
             ${actions}
         `;
@@ -335,29 +395,29 @@ function submitBalanceChange() {
     alert('Баланс обновлен');
     closeModal();
     renderUsers();
-    updateBalanceDisplay(); // In case admin edited themselves
+    updateBalanceDisplay();
 }
 
-// --- ADMIN ORDERS ---
+// --- ORDERS ---
 function renderOrders() {
     if (!currentUser.isAdmin) return;
     const container = document.getElementById('orders-container');
     container.innerHTML = '';
     
     if (db.pendingOrders.length === 0) {
-        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">Нет новых покупок</p>';
+        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">Нет новых заявок</p>';
         return;
     }
 
     db.pendingOrders.forEach(order => {
         const el = document.createElement('div');
-        el.className = 'user-row'; // Reuse style
+        el.className = 'user-row';
         el.innerHTML = `
             <div>
                 <div style="color: #ffd700; font-weight:bold">${order.item}</div>
                 <div style="font-size:12px;">Покупатель: ${order.nick}</div>
             </div>
-            <button class="btn-primary" style="width:auto; padding:5px 15px; margin:0;" onclick="confirmOrder(${order.id})">Выдать</button>
+            <button class="btn-primary" style="width:auto; padding:8px 16px; margin:0; font-size:13px;" onclick="confirmOrder(${order.id})">Выдать</button>
         `;
         container.appendChild(el);
     });
@@ -386,21 +446,22 @@ function renderLogs() {
     
     db.logs.forEach(log => {
         const el = document.createElement('div');
-        // Determine type for color
         let typeClass = '';
+        
         if (log.text.includes('купил')) typeClass = 'buy';
-        if (log.text.includes('Изменил баланс')) typeClass = 'add';
+        else if (log.text.includes('Изменил баланс') && log.text.includes('+')) typeClass = 'salary';
+        else if (log.text.includes('Изменил баланс')) typeClass = 'admin';
         
         el.className = `log-entry ${typeClass}`;
         el.innerHTML = `
-            <strong>${log.actor}</strong>: ${log.text}
+            <div style="font-weight:600; margin-bottom:2px;">${log.actor}</div>
+            <div style="opacity:0.9">${log.text}</div>
             <span class="log-time">${log.time}</span>
         `;
         container.appendChild(el);
     });
 }
 
-// --- UTILS ---
 function closeModal() {
     document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
     selectedItem = null;
