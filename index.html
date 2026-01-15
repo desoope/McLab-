@@ -104,8 +104,19 @@
 
     <div id="modal-buy" class="modal hidden">
         <div class="glass-card modal-content">
-            <h3 id="modal-item-name">Товар</h3>
-            <p>Цена: <span id="modal-item-price">0</span> баллов</p>
+            <h3 id="modal-item-name" style="margin-bottom: 5px;">Товар</h3>
+            <p style="color:#aaa; font-size:14px; margin-bottom:20px;">Цена за шт: <span id="modal-item-price" style="color:white;">0</span> Б</p>
+            
+            <div class="quantity-wrapper">
+                <button class="qty-btn" onclick="updateQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                <input type="number" id="buy-qty" value="1" min="1" oninput="updateTotal()">
+                <button class="qty-btn" onclick="updateQty(1)"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <div class="total-price-block">
+                Итого: <span id="modal-total-price" style="color: #ffd700; font-weight:bold;">0</span> Б
+            </div>
+
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal()">Отмена</button>
                 <button class="btn-primary" onclick="confirmPurchase()">Купить</button>
@@ -149,7 +160,6 @@
             <h3 style="margin-bottom:15px;">Новый сотрудник</h3>
             <input type="text" id="new-user-nick" placeholder="Никнейм">
             <input type="password" id="new-user-pass" placeholder="Пароль" style="margin-top:10px;">
-            
             <select id="new-user-role" class="glass-select" style="margin-top:10px;">
                 <option value="Модератор">Модератор</option>
                 <option value="Строитель">Строитель</option>
@@ -159,12 +169,10 @@
                 <option value="Куратор">Куратор</option>
                 <option value="Гл. Модератор">Гл. Модератор</option>
             </select>
-
             <div style="margin-top:15px; display:flex; gap:10px; align-items:center; justify-content:center;">
                 <input type="checkbox" id="new-user-admin" style="width:20px; height:20px;">
                 <label for="new-user-admin" style="color:white; font-size:14px;">Дать права Админа</label>
             </div>
-
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal()">Отмена</button>
                 <button class="btn-primary" onclick="submitNewUser()">Создать</button>
