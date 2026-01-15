@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>McSkill Staff Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-container">
+        
+        <section id="auth-screen" class="active-screen">
+            <div class="glass-card auth-card">
+                <h2>HitechClassic 1.7.10</h2>
+                <p class="subtitle">Staff Shop</p>
+                
+                <div class="input-group">
+                    <input type="text" id="auth-nick" placeholder="Никнейм">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="auth-pass" placeholder="Пароль">
+                </div>
+                <div class="input-group hidden" id="confirm-pass-group">
+                    <input type="password" id="auth-pass-confirm" placeholder="Повторите пароль">
+                </div>
+
+                <button class="btn-primary" onclick="handleAuth()">Войти</button>
+                <p class="toggle-auth" onclick="toggleAuthMode()">Нет аккаунта? Регистрация</p>
+            </div>
+        </section>
+
+        <main id="main-app" class="hidden">
+            
+            <header class="glass-header">
+                <div class="user-info">
+                    <div class="avatar" id="user-avatar"></div>
+                    <div>
+                        <h3 id="display-nick">User</h3>
+                        <span class="badge" id="display-role">Role</span>
+                    </div>
+                </div>
+                <div class="balance-container">
+                    <span id="display-balance">0</span> <i class="fa-solid fa-coins"></i>
+                </div>
+                <div id="admin-notify" class="notify-btn hidden" onclick="showScreen('admin-orders')">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="dot hidden" id="notify-dot"></span>
+                </div>
+            </header>
+
+            <section id="shop-screen" class="content-screen active">
+                <div class="shop-grid" id="shop-container">
+                    </div>
+            </section>
+
+            <section id="users-screen" class="content-screen hidden">
+                <h2>Персонал проекта</h2>
+                <div class="user-list" id="users-list-container">
+                    </div>
+            </section>
+
+            <section id="logs-screen" class="content-screen hidden">
+                <h2>История операций</h2>
+                <div class="logs-list" id="logs-container">
+                    </div>
+            </section>
+
+            <section id="admin-orders-screen" class="content-screen hidden">
+                <h2>Ожидают выдачи</h2>
+                <div class="orders-list" id="orders-container">
+                    </div>
+            </section>
+
+            <nav class="glass-nav">
+                <button class="nav-btn active" onclick="showScreen('shop')">
+                    <i class="fa-solid fa-store"></i>
+                    <span>Магазин</span>
+                </button>
+                <button class="nav-btn" onclick="showScreen('users')">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Состав</span>
+                </button>
+                <button class="nav-btn" onclick="showScreen('logs')">
+                    <i class="fa-solid fa-scroll"></i>
+                    <span>Логи</span>
+                </button>
+                <button class="nav-btn logout" onclick="logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </nav>
+        </main>
+
+    </div>
+
+    <div id="modal-buy" class="modal hidden">
+        <div class="glass-card modal-content">
+            <h3 id="modal-item-name">Товар</h3>
+            <p>Цена: <span id="modal-item-price">0</span> баллов</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+                <button class="btn-primary" onclick="confirmPurchase()">Купить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-balance" class="modal hidden">
+        <div class="glass-card modal-content">
+            <h3>Изменить баланс</h3>
+            <p id="modal-target-user"></p>
+            <input type="number" id="balance-amount" placeholder="Сумма (+ или -)">
+            <input type="text" id="balance-reason" placeholder="Причина (ЗП, Премия...)">
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+                <button class="btn-primary" onclick="submitBalanceChange()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
