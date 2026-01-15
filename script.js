@@ -1,4 +1,4 @@
-// --- 1. FIREBASE CONFIGURATION (ТВОЙ КОНФИГ) ---
+// --- 1. FIREBASE CONFIG ---
 const firebaseConfig = {
   apiKey: "AIzaSyCMnbM_9uCV_M4eryzqOuMwtR75OO8-A9w",
   authDomain: "mcskill-824c7.firebaseapp.com",
@@ -10,12 +10,10 @@ const firebaseConfig = {
   measurementId: "G-SPY9ZWFH5R"
 };
 
-// Инициализация Firebase (Compat version)
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// --- 2. CONSTANTS & ITEMS ---
-
+// --- 2. DATA ---
 const ITEMS = [
     // Привилегии
     { id: 'priv_mod', name: '[Mod] на месяц', price: 270, img: 'priv_mod.png', category: 'privilege' },
@@ -79,17 +77,10 @@ const CATEGORY_TITLES = {
 };
 const CATEGORY_ORDER = ['privilege', 'currency', 'draconic', 'wyvern', 'tech', 'cosmetic'];
 
-// --- 3. DATABASE LOGIC ---
-let usersData = {};
-let logsData = [];
-let ordersData = [];
-let currentUser = null;
-
-// ДАННЫЕ ДЛЯ ПЕРВОГО ЗАПУСКА (GintaRus теперь Админ)
 const INITIAL_USERS = {
     'nikita2007558': { role: 'Гл. Модератор', isAdmin: true, balance: 352, pass: '123' },
     'DesOope': { role: 'Модератор', isAdmin: true, balance: 620, pass: '123' },
-    'GintaRus': { role: 'Гейм Дизайнер', isAdmin: true, balance: 0, pass: '123' }, // Добавлен в админы
+    'GintaRus': { role: 'Гейм Дизайнер', isAdmin: true, balance: 0, pass: '123' },
     '4epB9lk': { role: 'Тех. Админ', isAdmin: true, balance: 0, pass: '123' },
     'Noise71': { role: 'Куратор', isAdmin: true, balance: 4001, pass: '123' },
     'Sashaiolh': { role: 'НеАдмин', isAdmin: false, balance: 89250, pass: '123' },
@@ -99,60 +90,63 @@ const INITIAL_USERS = {
     '_artifev_': { role: 'Модератор', isAdmin: false, balance: 160, pass: '123' }
 };
 
-// Запуск слушателей
+// --- 3. LOGIC ---
+let usersData = {};
+let logsData = [];
+let ordersData = [];
+let currentUser = null;
+let selectedItem = null; 
+
 database.ref('shop_data').on('value', (snapshot) => {
     const data = snapshot.val();
-    
     if (!data) {
-        // Если база пустая, заливаем INITIAL_USERS
-        database.ref('shop_data').set({
-            users: INITIAL_USERS,
-            logs: [],
-            orders: []
-        });
+        database.ref('shop_data').set({ users: INITIAL_USERS, logs: [], orders: [] });
         return;
     }
-
     usersData = data.users || {};
     logsData = data.logs || [];
     ordersData = data.orders || [];
 
-    // Обновляем текущего юзера
-    if (currentUser) {
+    if (!currentUser) {
+        const savedNick = localStorage.getItem('mcskill_user_nick');
+        if (savedNick && usersData[savedNick]) {
+            currentUser = { nick: savedNick, ...usersData[savedNick] };
+            initApp();
+        }
+    } else {
         if (usersData[currentUser.nick]) {
             currentUser = { nick: currentUser.nick, ...usersData[currentUser.nick] };
             updateUI();
         } else {
-            logout(); // Юзера удалили
+            logout();
         }
     }
     document.getElementById('loading-text').classList.add('hidden');
 });
 
-// --- 4. AUTH & NAVIGATION ---
+// --- AUTH ---
 const authScreen = document.getElementById('auth-screen');
 const mainApp = document.getElementById('main-app');
 
 function handleAuth() {
     const nick = document.getElementById('auth-nick').value.trim();
     const pass = document.getElementById('auth-pass').value.trim();
-    
     if (!nick || !pass) return alert('Заполните все поля');
-
-    // Проверка (теперь по загруженным данным из Firebase)
-    if (Object.keys(usersData).length === 0) return alert('Данные загружаются... подождите пару секунд');
+    if (Object.keys(usersData).length === 0) return alert('База загружается...');
 
     const user = usersData[nick];
     if (user && user.pass === pass) {
         currentUser = { nick: nick, ...user };
+        localStorage.setItem('mcskill_user_nick', nick);
         initApp();
     } else {
-        alert('Неверный логин или пароль (попробуйте 123)');
+        alert('Неверный логин/пароль');
     }
 }
 
 function logout() {
     currentUser = null;
+    localStorage.removeItem('mcskill_user_nick');
     authScreen.classList.remove('hidden');
     mainApp.classList.add('hidden');
     document.getElementById('auth-pass').value = '';
@@ -166,6 +160,7 @@ function initApp() {
 }
 
 function updateUI() {
+    if(!currentUser) return;
     document.getElementById('display-nick').textContent = currentUser.nick;
     document.getElementById('display-role').textContent = currentUser.role;
     document.getElementById('display-balance').textContent = currentUser.balance;
@@ -185,33 +180,63 @@ function updateUI() {
     checkNotifications();
 }
 
-// --- 5. LOGIC (Покупки, Админка) ---
+// --- BUYING LOGIC ---
 
-function createOrder(item) {
-    if (currentUser.balance < item.price) return alert('Недостаточно баллов!');
+function openBuyModal(item) {
+    selectedItem = item;
+    // Сброс количества на 1
+    document.getElementById('buy-qty').value = 1;
+    document.getElementById('modal-item-name').textContent = item.name;
+    document.getElementById('modal-item-price').textContent = item.price;
+    updateTotal();
+    document.getElementById('modal-buy').classList.remove('hidden');
+}
 
-    // Списание (Локально + Firebase)
-    const newBalance = currentUser.balance - item.price;
+function updateQty(change) {
+    const input = document.getElementById('buy-qty');
+    let newVal = parseInt(input.value) + change;
+    if (newVal < 1) newVal = 1;
+    input.value = newVal;
+    updateTotal();
+}
+
+function updateTotal() {
+    if (!selectedItem) return;
+    const qty = parseInt(document.getElementById('buy-qty').value);
+    const total = selectedItem.price * qty;
+    document.getElementById('modal-total-price').textContent = total;
+}
+
+function confirmPurchase() {
+    if (!selectedItem) return alert('Ошибка товара');
+    
+    const qty = parseInt(document.getElementById('buy-qty').value);
+    if (qty < 1) return alert('Неверное количество');
+    
+    const totalPrice = selectedItem.price * qty;
+
+    if (currentUser.balance < totalPrice) return alert('Недостаточно баллов!');
+
+    const newBalance = currentUser.balance - totalPrice;
     database.ref(`shop_data/users/${currentUser.nick}/balance`).set(newBalance);
 
-    // Новая заявка
     const newOrder = {
         id: Date.now(),
         nick: currentUser.nick,
-        item: item.name,
-        price: item.price,
+        item: `${qty}x ${selectedItem.name}`,
+        price: totalPrice,
         date: new Date().toLocaleString()
     };
+    
     const updatedOrders = [...ordersData, newOrder];
     database.ref('shop_data/orders').set(updatedOrders);
 
-    // Лог
-    logAction(currentUser.nick, `${currentUser.nick} купил ${item.name} за ${item.price}`);
+    logAction(currentUser.nick, `${currentUser.nick} купил ${qty}x ${selectedItem.name} за ${totalPrice}`);
     closeModal();
     alert('Покупка совершена! Ожидайте выдачи.');
 }
 
-// Управление персоналом
+// --- ADMIN / USERS ---
 let selectedUserNick = null;
 
 function openEditUserModal(nick) {
@@ -229,28 +254,25 @@ function submitUserChanges() {
     const reason = document.getElementById('balance-reason').value;
     const newRole = document.getElementById('role-select').value;
     
-    // Смена роли
     if (usersData[selectedUserNick].role !== newRole) {
         database.ref(`shop_data/users/${selectedUserNick}/role`).set(newRole);
-        // Права админа даем вручную (пока упрощенно, можно доработать)
     }
 
-    // Смена баланса
     if (amount && reason) {
         const currentBal = usersData[selectedUserNick].balance;
         const newBal = parseInt(currentBal) + parseInt(amount);
         database.ref(`shop_data/users/${selectedUserNick}/balance`).set(newBal);
         logAction(currentUser.nick, `Изменил баланс ${selectedUserNick}: ${amount > 0 ? '+' : ''}${amount}. Причина: ${reason}`);
     } else if (amount && !reason) {
-        return alert('Укажите причину изменения баланса!');
+        return alert('Укажите причину!');
     }
     closeModal();
 }
 
 function deleteUser() {
-    if (confirm(`Удалить сотрудника ${selectedUserNick}?`)) {
+    if (confirm(`Удалить ${selectedUserNick}?`)) {
         database.ref(`shop_data/users/${selectedUserNick}`).remove();
-        logAction(currentUser.nick, `Удалил сотрудника ${selectedUserNick}`);
+        logAction(currentUser.nick, `Удалил ${selectedUserNick}`);
         closeModal();
     }
 }
@@ -269,29 +291,23 @@ function submitNewUser() {
     const role = document.getElementById('new-user-role').value;
     const isAdmin = document.getElementById('new-user-admin').checked;
 
-    if (!nick || !pass) return alert('Заполните Ник и Пароль');
-    if (usersData[nick]) return alert('Такой сотрудник уже есть!');
+    if (!nick || !pass) return alert('Заполните поля');
+    if (usersData[nick]) return alert('Уже существует');
 
-    const newUser = {
-        role: role,
-        isAdmin: isAdmin,
-        balance: 0,
-        pass: pass
-    };
-
+    const newUser = { role: role, isAdmin: isAdmin, balance: 0, pass: pass };
     database.ref(`shop_data/users/${nick}`).set(newUser);
-    logAction(currentUser.nick, `Добавил сотрудника ${nick} (${role})`);
+    logAction(currentUser.nick, `Добавил ${nick} (${role})`);
     closeModal();
 }
 
 function confirmOrder(id) {
-    if(confirm('Подтвердить выдачу товара?')) {
+    if(confirm('Подтвердить выдачу?')) {
         const newOrders = ordersData.filter(o => o.id !== id);
         database.ref('shop_data/orders').set(newOrders);
     }
 }
 
-// --- 6. UTILS & RENDERS ---
+// --- UTILS ---
 function logAction(actor, text) {
     const newLog = { actor: actor, text: text, time: new Date().toLocaleString() };
     const updatedLogs = [newLog, ...logsData];
@@ -312,7 +328,6 @@ function renderShop() {
             const header = document.createElement('div');
             header.className = 'category-header';
             header.innerHTML = CATEGORY_TITLES[catKey] || catKey;
-            
             const grid = document.createElement('div');
             grid.className = 'shop-grid';
             
@@ -324,7 +339,7 @@ function renderShop() {
                     <div class="item-name">${item.name}</div>
                     <div class="item-price">${item.price} Б</div>
                 `;
-                el.onclick = () => { selectedItem = item; openBuyModal(item); };
+                el.onclick = () => openBuyModal(item);
                 grid.appendChild(el);
             });
             container.appendChild(header);
@@ -333,17 +348,9 @@ function renderShop() {
     });
 }
 
-function openBuyModal(item) {
-    document.getElementById('modal-item-name').textContent = item.name;
-    document.getElementById('modal-item-price').textContent = item.price;
-    document.getElementById('modal-buy').classList.remove('hidden');
-}
-
 function renderUsers() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
-    
-    // Превращаем объект в массив для сортировки
     const usersArray = Object.keys(usersData).map(key => ({ nick: key, ...usersData[key] }));
     const sortedUsers = usersArray.sort((a, b) => {
         if (a.isAdmin && !b.isAdmin) return -1;
@@ -354,12 +361,10 @@ function renderUsers() {
     sortedUsers.forEach(user => {
         const el = document.createElement('div');
         el.className = 'user-row';
-        
         let actions = '';
         if (currentUser.isAdmin) {
              actions = `<button class="btn-icon" onclick="openEditUserModal('${user.nick}')"><i class="fa-solid fa-pen"></i></button>`;
         }
-
         let roleColor = '#aaa';
         if (user.role.includes('Гл')) roleColor = '#ff453a';
         if (user.role.includes('Тех')) roleColor = '#bf5af2';
@@ -403,9 +408,8 @@ function renderOrders() {
     if (!currentUser.isAdmin) return;
     const container = document.getElementById('orders-container');
     container.innerHTML = '';
-    
     if (ordersData.length === 0) {
-        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">Нет новых заявок</p>';
+        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:20px;">Нет заявок</p>';
         return;
     }
     ordersData.forEach(order => {
@@ -414,7 +418,7 @@ function renderOrders() {
         el.innerHTML = `
             <div>
                 <div style="color: #ffd700; font-weight:bold">${order.item}</div>
-                <div style="font-size:12px;">Покупатель: ${order.nick}</div>
+                <div style="font-size:12px;">${order.nick}</div>
             </div>
             <button class="btn-primary" style="width:auto; padding:8px 16px; margin:0;" onclick="confirmOrder(${order.id})">Выдать</button>
         `;
@@ -433,7 +437,6 @@ function showScreen(screenId) {
     document.querySelectorAll('.content-screen').forEach(s => s.classList.add('hidden'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(screenId + '-screen').classList.remove('hidden');
-    
     if(screenId === 'shop') document.querySelectorAll('.nav-btn')[0].classList.add('active');
     if(screenId === 'users') document.querySelectorAll('.nav-btn')[1].classList.add('active');
     if(screenId === 'logs') document.querySelectorAll('.nav-btn')[2].classList.add('active');
