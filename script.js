@@ -1,13 +1,10 @@
 // --- CONFIG & DATA ---
 
-// Список разрешенных ников и их роли
 const WHITELIST = {
     'nikita2007558': { role: 'Гл. Модератор', isAdmin: true },
-    'DesOope': { role: 'Модератор', isAdmin: true }, 
+    'DesOope': { role: 'Модератор', isAdmin: true },
     '4epB9lk': { role: 'Тех. Админ', isAdmin: true },
     'Noise71': { role: 'Куратор', isAdmin: true },
-    
-    // Обычные сотрудники
     'Sashaiolh': { role: 'НеАдмин', isAdmin: false },
     'BobrKu': { role: 'Модератор', isAdmin: false },
     'Yamix': { role: 'Модератор', isAdmin: false },
@@ -16,64 +13,79 @@ const WHITELIST = {
     '_artifev_': { role: 'Модератор', isAdmin: false }
 };
 
-// Товары
+// Товары с категориями
 const ITEMS = [
     // Привилегии
-    { id: 'priv_mod', name: '[Mod] на месяц', price: 270, img: 'priv_mod.png' },
-    { id: 'priv_deluxe', name: '[Deluxe] на месяц', price: 185, img: 'priv_deluxe.png' },
-    { id: 'priv_grand', name: '[Grand] на месяц', price: 130, img: 'priv_grand.png' },
-    { id: 'priv_gold', name: '[Gold] на месяц', price: 95, img: 'priv_gold.png' },
-    { id: 'priv_vip', name: '[Vip] на месяц', price: 50, img: 'priv_vip.png' },
-    { id: 'priv_pro', name: '[Pro] на месяц', price: 20, img: 'priv_pro.png' },
+    { id: 'priv_mod', name: '[Mod] на месяц', price: 270, img: 'priv_mod.png', category: 'privilege' },
+    { id: 'priv_deluxe', name: '[Deluxe] на месяц', price: 185, img: 'priv_deluxe.png', category: 'privilege' },
+    { id: 'priv_grand', name: '[Grand] на месяц', price: 130, img: 'priv_grand.png', category: 'privilege' },
+    { id: 'priv_gold', name: '[Gold] на месяц', price: 95, img: 'priv_gold.png', category: 'privilege' },
+    { id: 'priv_vip', name: '[Vip] на месяц', price: 50, img: 'priv_vip.png', category: 'privilege' },
+    { id: 'priv_pro', name: '[Pro] на месяц', price: 20, img: 'priv_pro.png', category: 'privilege' },
     
     // Валюта и кейсы
-    { id: 'money_100', name: '100 эмов', price: 15, img: 'ems.png' },
-    { id: 'case_dragon', name: 'Dragon кейс', price: 40, img: 'case_dragon.png' },
-    { id: 'case_sticker', name: 'Sticker кейс', price: 20, img: 'case_sticker.png' },
-    { id: 'case_chance', name: 'Chance кейс', price: 20, img: 'case_chance.png' },
-    { id: 'case_emerald', name: 'Изумрудный кейс', price: 8, img: 'case_emerald.png' },
+    { id: 'money_100', name: '100 эмов', price: 15, img: 'ems.png', category: 'currency' },
+    { id: 'case_dragon', name: 'Dragon кейс', price: 40, img: 'case_dragon.png', category: 'currency' },
+    { id: 'case_sticker', name: 'Sticker кейс', price: 20, img: 'case_sticker.png', category: 'currency' },
+    { id: 'case_chance', name: 'Chance кейс', price: 20, img: 'case_chance.png', category: 'currency' },
+    { id: 'case_emerald', name: 'Изумрудный кейс', price: 8, img: 'case_emerald.png', category: 'currency' },
     
-    // Кастомизация
-    { id: 'custom_perm', name: 'Кастомизация (навсегда)', price: 850, img: 'custom.png' },
-    { id: 'skin_crystal', name: 'Чистый кристалл (скин)', price: 650, img: 'skin1.png' },
-    { id: 'skin_void', name: 'Камень бездны (скин)', price: 650, img: 'skin2.png' },
-    { id: 'staff_dragon', name: 'Посох дракона', price: 450, img: 'draconic_staff.png' },
-    { id: 'skin_moon', name: 'Сияние Луны (скин)', price: 300, img: 'skin3.png' },
-    { id: 'skin_vampire', name: 'Объятия вампира (скин)', price: 300, img: 'skin4.png' },
+    // Скины и Кастомизация
+    { id: 'custom_perm', name: 'Кастомизация (навсегда)', price: 850, img: 'custom.png', category: 'cosmetic' },
+    { id: 'custom_temp', name: 'Кастомизация (вайп)', price: 150, img: 'custom_temp.png', category: 'cosmetic' },
+    { id: 'skin_crystal', name: 'Чистый кристалл (скин)', price: 650, img: 'skin1.png', category: 'cosmetic' },
+    { id: 'skin_void', name: 'Камень бездны (скин)', price: 650, img: 'skin2.png', category: 'cosmetic' },
+    { id: 'staff_dragon', name: 'Посох дракона', price: 450, img: 'draconic_staff.png', category: 'draconic' }, // Перенес посох в драконик
+    { id: 'skin_moon', name: 'Сияние Луны (скин)', price: 300, img: 'skin3.png', category: 'cosmetic' },
+    { id: 'skin_vampire', name: 'Объятия вампира (скин)', price: 300, img: 'skin4.png', category: 'cosmetic' },
     
     // Draconic Evolution
-    { id: 'uucs', name: 'UUCS', price: 200, img: 'uucs.png' },
-    { id: 'drac_chest', name: 'Драконий нагрудник', price: 200, img: 'drac_chest.png' },
-    { id: 'drac_pick', name: 'Драконья кирка', price: 150, img: 'drac_pick.png' },
-    { id: 'custom_temp', name: 'Кастомизация (вайп)', price: 150, img: 'custom_temp.png' },
-    { id: 'drac_bow', name: 'Лук дракона', price: 130, img: 'drac_bow.png' },
-    { id: 'drac_sword', name: 'Драконий меч', price: 130, img: 'drac_sword.png' },
-    { id: 'drac_cap', name: 'Драконий конденсатор', price: 100, img: 'drac_cap.png' },
-    { id: 'drac_shovel', name: 'Драконья лопата', price: 100, img: 'drac_shovel.png' },
-    { id: 'drac_axe', name: 'Драконий топор', price: 100, img: 'drac_axe.png' },
-    { id: 'drac_helm', name: 'Драконий шлем', price: 100, img: 'drac_helm.png' },
-    { id: 'drac_legs', name: 'Драконьи поножи', price: 100, img: 'drac_legs.png' },
-    { id: 'drac_boots', name: 'Драконьи ботинки', price: 100, img: 'drac_boots.png' },
+    { id: 'uucs', name: 'UUCS', price: 200, img: 'uucs.png', category: 'draconic' },
+    { id: 'drac_chest', name: 'Драконий нагрудник', price: 200, img: 'drac_chest.png', category: 'draconic' },
+    { id: 'drac_pick', name: 'Драконья кирка', price: 150, img: 'drac_pick.png', category: 'draconic' },
+    { id: 'drac_bow', name: 'Лук дракона', price: 130, img: 'drac_bow.png', category: 'draconic' },
+    { id: 'drac_sword', name: 'Драконий меч', price: 130, img: 'drac_sword.png', category: 'draconic' },
+    { id: 'drac_cap', name: 'Драконий конденсатор', price: 100, img: 'drac_cap.png', category: 'draconic' },
+    { id: 'drac_shovel', name: 'Драконья лопата', price: 100, img: 'drac_shovel.png', category: 'draconic' },
+    { id: 'drac_axe', name: 'Драконий топор', price: 100, img: 'drac_axe.png', category: 'draconic' },
+    { id: 'drac_helm', name: 'Драконий шлем', price: 100, img: 'drac_helm.png', category: 'draconic' },
+    { id: 'drac_legs', name: 'Драконьи поножи', price: 100, img: 'drac_legs.png', category: 'draconic' },
+    { id: 'drac_boots', name: 'Драконьи ботинки', price: 100, img: 'drac_boots.png', category: 'draconic' },
     
-    // Wyvern & Misc
-    { id: 'space_cable', name: 'Пространственный кабель', price: 90, img: 'cable.png' },
-    { id: 'wyv_chest', name: 'Нагрудник виверны', price: 60, img: 'wyv_chest.png' },
-    { id: 'sigil', name: 'Стабильный сигил', price: 50, img: 'sigil.png' },
-    { id: 'wyv_helm', name: 'Шлем виверны', price: 50, img: 'wyv_helm.png' },
-    { id: 'wyv_legs', name: 'Поножи виверны', price: 50, img: 'wyv_legs.png' },
-    { id: 'wyv_boots', name: 'Ботинки виверны', price: 50, img: 'wyv_boots.png' },
-    { id: 'wyv_pick', name: 'Кирка виверны', price: 50, img: 'wyv_pick.png' },
-    { id: 'converter', name: 'Конвертер', price: 50, img: 'converter.png' },
-    { id: 'uv_glasses', name: 'Ультрафиолетовые очки', price: 50, img: 'glasses.png' },
-    { id: 'gravi_chest', name: 'Гравитационный нагрудник', price: 40, img: 'gravi.png' },
-    { id: 'hologram', name: 'Голограмма', price: 30, img: 'holo.png' },
-    { id: 'vajra', name: 'Ваджра', price: 25, img: 'vajra.png' },
-    { id: 'relocator', name: 'Релокатор', price: 20, img: 'relocator.png' },
-    { id: 'creative_proc', name: 'Творческий процессор', price: 20, img: 'proc.png' },
-    { id: 'light_source', name: 'Источник света', price: 3, img: 'light.png' },
+    // Wyvern
+    { id: 'wyv_chest', name: 'Нагрудник виверны', price: 60, img: 'wyv_chest.png', category: 'wyvern' },
+    { id: 'wyv_helm', name: 'Шлем виверны', price: 50, img: 'wyv_helm.png', category: 'wyvern' },
+    { id: 'wyv_legs', name: 'Поножи виверны', price: 50, img: 'wyv_legs.png', category: 'wyvern' },
+    { id: 'wyv_boots', name: 'Ботинки виверны', price: 50, img: 'wyv_boots.png', category: 'wyvern' },
+    { id: 'wyv_pick', name: 'Кирка виверны', price: 50, img: 'wyv_pick.png', category: 'wyvern' },
+    
+    // Техника и разное
+    { id: 'space_cable', name: 'Пространственный кабель', price: 90, img: 'cable.png', category: 'tech' },
+    { id: 'sigil', name: 'Стабильный сигил', price: 50, img: 'sigil.png', category: 'tech' },
+    { id: 'converter', name: 'Конвертер', price: 50, img: 'converter.png', category: 'tech' },
+    { id: 'uv_glasses', name: 'Ультрафиолетовые очки', price: 50, img: 'glasses.png', category: 'tech' },
+    { id: 'gravi_chest', name: 'Гравитационный нагрудник', price: 40, img: 'gravi.png', category: 'tech' },
+    { id: 'hologram', name: 'Голограмма', price: 30, img: 'holo.png', category: 'tech' },
+    { id: 'vajra', name: 'Ваджра', price: 25, img: 'vajra.png', category: 'tech' },
+    { id: 'relocator', name: 'Релокатор', price: 20, img: 'relocator.png', category: 'tech' },
+    { id: 'creative_proc', name: 'Творческий процессор', price: 20, img: 'proc.png', category: 'tech' },
+    { id: 'light_source', name: 'Источник света', price: 3, img: 'light.png', category: 'tech' },
 ];
 
-// --- FAKE DATA GENERATOR (Запускается если база пустая) ---
+// Названия категорий для отображения
+const CATEGORY_TITLES = {
+    'privilege': '<i class="fa-solid fa-crown"></i> Привилегии',
+    'currency': '<i class="fa-solid fa-coins"></i> Валюта и Кейсы',
+    'cosmetic': '<i class="fa-solid fa-shirt"></i> Скины и Кастомизация',
+    'draconic': '<i class="fa-solid fa-dragon"></i> Draconic Evolution',
+    'wyvern': '<i class="fa-solid fa-shield-halved"></i> Wyvern Evolution',
+    'tech': '<i class="fa-solid fa-microchip"></i> Техника и Разное'
+};
+
+// Порядок категорий на экране
+const CATEGORY_ORDER = ['privilege', 'currency', 'draconic', 'wyvern', 'tech', 'cosmetic'];
+
+// --- DB & FAKE DATA ---
 function getInitialData() {
     return [
         { nick: 'Sashaiolh', role: 'НеАдмин', isAdmin: false, balance: 89250, pass: '123' },
@@ -105,10 +117,8 @@ function getFakeLogs() {
     ];
 }
 
-// --- DATABASE CLASS ---
 class DB {
     constructor() {
-        // Проверяем, есть ли данные. Если нет - грузим фейковые.
         if (!localStorage.getItem('mcskill_users')) {
             console.log("Initializing Fake Data...");
             this.users = getInitialData();
@@ -184,8 +194,6 @@ class DB {
     confirmOrder(adminNick, orderId) {
         const index = this.pendingOrders.findIndex(o => o.id === orderId);
         if (index === -1) return;
-        
-        const order = this.pendingOrders[index];
         this.pendingOrders.splice(index, 1);
         this.save();
     }
@@ -258,12 +266,10 @@ function initApp() {
     authScreen.classList.add('hidden');
     mainApp.classList.remove('hidden');
     
-    // Header Info
     document.getElementById('display-nick').textContent = currentUser.nick;
     document.getElementById('display-role').textContent = currentUser.role;
     updateBalanceDisplay();
 
-    // Permissions
     if (currentUser.isAdmin) {
         document.getElementById('admin-notify').classList.remove('hidden');
     } else {
@@ -274,7 +280,6 @@ function initApp() {
     renderUsers(); 
     renderLogs();
     checkNotifications();
-    
     showScreen('shop'); 
 }
 
@@ -298,21 +303,41 @@ function showScreen(screenId) {
     if (screenId === 'logs') renderLogs();
 }
 
-// --- SHOP ---
+// --- SHOP RENDER LOGIC ---
 function renderShop() {
     const container = document.getElementById('shop-container');
     container.innerHTML = '';
     
-    ITEMS.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'item-card';
-        el.innerHTML = `
-            <img src="images/${item.img}" onerror="this.src='https://via.placeholder.com/100?text=Item'" class="item-img">
-            <div class="item-name">${item.name}</div>
-            <div class="item-price">${item.price} Б</div>
-        `;
-        el.onclick = () => openBuyModal(item);
-        container.appendChild(el);
+    // Проходим по заданному порядку категорий
+    CATEGORY_ORDER.forEach(catKey => {
+        // Фильтруем товары для этой категории
+        const catItems = ITEMS.filter(item => item.category === catKey);
+        
+        if (catItems.length > 0) {
+            // Создаем заголовок
+            const header = document.createElement('div');
+            header.className = 'category-header';
+            header.innerHTML = CATEGORY_TITLES[catKey] || catKey;
+            container.appendChild(header);
+            
+            // Создаем сетку товаров
+            const grid = document.createElement('div');
+            grid.className = 'shop-grid';
+            
+            catItems.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'item-card';
+                el.innerHTML = `
+                    <img src="images/${item.img}" onerror="this.src='https://via.placeholder.com/100?text=Item'" class="item-img">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">${item.price} Б</div>
+                `;
+                el.onclick = () => openBuyModal(item);
+                grid.appendChild(el);
+            });
+            
+            container.appendChild(grid);
+        }
     });
 }
 
@@ -337,12 +362,12 @@ function confirmPurchase() {
     }
 }
 
-// --- USERS ---
+// --- OTHER RENDERS ---
+
 function renderUsers() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
     
-    // Сортировка: Админы -> Остальные по балансу
     const sortedUsers = [...db.users].sort((a, b) => {
         if (a.isAdmin && !b.isAdmin) return -1;
         if (!a.isAdmin && b.isAdmin) return 1;
@@ -398,7 +423,6 @@ function submitBalanceChange() {
     updateBalanceDisplay();
 }
 
-// --- ORDERS ---
 function renderOrders() {
     if (!currentUser.isAdmin) return;
     const container = document.getElementById('orders-container');
@@ -439,7 +463,6 @@ function checkNotifications() {
     else dot.classList.add('hidden');
 }
 
-// --- LOGS ---
 function renderLogs() {
     const container = document.getElementById('logs-container');
     container.innerHTML = '';
