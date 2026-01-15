@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>McSkill Staff Shop</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -57,26 +57,22 @@
             </header>
 
             <section id="shop-screen" class="content-screen active">
-                <div class="shop-grid" id="shop-container">
-                    </div>
+                <div class="shop-grid" id="shop-container"></div>
             </section>
 
             <section id="users-screen" class="content-screen hidden">
                 <h2>Персонал проекта</h2>
-                <div class="user-list" id="users-list-container">
-                    </div>
+                <div class="user-list" id="users-list-container"></div>
             </section>
 
             <section id="logs-screen" class="content-screen hidden">
                 <h2>История операций</h2>
-                <div class="logs-list" id="logs-container">
-                    </div>
+                <div class="logs-list" id="logs-container"></div>
             </section>
 
             <section id="admin-orders-screen" class="content-screen hidden">
                 <h2>Ожидают выдачи</h2>
-                <div class="orders-list" id="orders-container">
-                    </div>
+                <div class="orders-list" id="orders-container"></div>
             </section>
 
             <nav class="glass-nav">
@@ -97,7 +93,6 @@
                 </button>
             </nav>
         </main>
-
     </div>
 
     <div id="modal-buy" class="modal hidden">
@@ -114,7 +109,7 @@
     <div id="modal-balance" class="modal hidden">
         <div class="glass-card modal-content">
             <h3>Изменить баланс</h3>
-            <p id="modal-target-user"></p>
+            <p id="modal-target-user" style="margin-bottom: 10px; color: #aaa;"></p>
             <input type="number" id="balance-amount" placeholder="Сумма (+ или -)">
             <input type="text" id="balance-reason" placeholder="Причина (ЗП, Премия...)">
             <div class="modal-actions">
