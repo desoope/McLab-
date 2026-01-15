@@ -11,7 +11,7 @@ const WHITELIST = {
     'Sashaiolh': { role: 'НеАдмин', isAdmin: false },
     'BobrKu': { role: 'Модератор', isAdmin: false },
     'Yamix': { role: 'Модератор', isAdmin: false },
-    'GintaRus': { role: 'Дизайнер', isAdmin: false },
+    'GintaRus': { role: 'Дизайнер', isAdmin: true },
     'MrMaiK': { role: 'Строитель', isAdmin: false },
     '_artifev_': { role: 'Модератор', isAdmin: false }
 };
