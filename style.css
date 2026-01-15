@@ -1,0 +1,274 @@
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-blur: 20px;
+    --primary-color: #0a84ff;
+    --text-color: #ffffff;
+    --danger-color: #ff453a;
+    --success-color: #32d74b;
+    --bg-dark: #000000;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+    overflow: hidden; /* Prevent body scroll, handle in app */
+    height: 100vh;
+}
+
+/* Background Animation */
+.background-blobs {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: move 10s infinite alternate;
+}
+
+.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #4a00e0; }
+.blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #8e2de2; animation-duration: 15s; }
+.blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: #00c6ff; animation-duration: 12s; }
+
+@keyframes move {
+    from { transform: translate(0, 0); }
+    to { transform: translate(30px, -30px); }
+}
+
+/* Auth Screen */
+.active-screen { display: flex; }
+.hidden { display: none !important; }
+
+#auth-screen {
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    text-align: center;
+}
+
+.auth-card h2 { margin-bottom: 5px; font-weight: 700; }
+.subtitle { color: rgba(255,255,255,0.6); margin-bottom: 30px; }
+
+.input-group { margin-bottom: 15px; }
+input {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+input:focus { border-color: var(--primary-color); background: rgba(0,0,0,0.4); }
+
+.btn-primary {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.toggle-auth {
+    margin-top: 20px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+}
+
+/* Main App */
+#main-app {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.glass-header {
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(20px);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 10;
+}
+
+.user-info { display: flex; align-items: center; gap: 10px; }
+.avatar {
+    width: 40px; height: 40px;
+    background: linear-gradient(45deg, #ff00cc, #333399);
+    border-radius: 50%;
+}
+.user-info h3 { font-size: 16px; }
+.badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+}
+
+.balance-container {
+    background: rgba(255,215,0,0.2);
+    color: #ffd700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.notify-btn {
+    position: relative;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.dot {
+    position: absolute; top: -2px; right: -2px;
+    width: 10px; height: 10px;
+    background: var(--danger-color);
+    border-radius: 50%;
+}
+
+/* Content Screens */
+.content-screen {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    padding-bottom: 100px; /* Space for nav */
+}
+
+/* Shop Grid */
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+}
+
+.item-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s;
+}
+.item-card:active { transform: scale(0.96); }
+
+.item-img {
+    width: 80px; height: 80px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.item-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; flex-grow: 1;}
+.item-price { 
+    color: #ffd700; font-size: 14px; font-weight: 700; 
+    background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 8px;
+}
+
+/* User List */
+.user-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+}
+.btn-edit {
+    background: none; border: 1px solid rgba(255,255,255,0.3);
+    color: white; width: 30px; height: 30px; border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Logs */
+.log-entry {
+    font-size: 12px;
+    padding: 10px;
+    border-left: 3px solid var(--primary-color);
+    background: rgba(0,0,0,0.2);
+    margin-bottom: 8px;
+    border-radius: 0 8px 8px 0;
+}
+.log-entry.buy { border-color: #ffd700; }
+.log-entry.add { border-color: var(--success-color); }
+.log-time { color: rgba(255,255,255,0.4); font-size: 10px; display: block; margin-top: 4px; }
+
+/* Bottom Nav */
+.glass-nav {
+    position: fixed;
+    bottom: 0; left: 0; width: 100%;
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(25px);
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 10px 25px 10px; /* Extra padding for iOS home bar */
+    z-index: 100;
+}
+
+.nav-btn {
+    background: none; border: none;
+    color: rgba(255,255,255,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.nav-btn i { font-size: 20px; }
+.nav-btn.active { color: var(--primary-color); }
+
+/* Modal */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    z-index: 200;
+    display: flex; justify-content: center; align-items: center;
+    padding: 20px;
+}
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.btn-cancel { background: rgba(255,255,255,0.1); color: white; border: none; flex: 1; padding: 15px; border-radius: 12px; }
