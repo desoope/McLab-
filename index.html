@@ -6,6 +6,10 @@
     <title>McSkill Staff Shop</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
 </head>
 <body>
 
@@ -21,24 +25,18 @@
             <div class="glass-card auth-card">
                 <h2>HitechClassic 1.7.10</h2>
                 <p class="subtitle">Staff Shop</p>
-                
                 <div class="input-group">
                     <input type="text" id="auth-nick" placeholder="Никнейм">
                 </div>
                 <div class="input-group">
                     <input type="password" id="auth-pass" placeholder="Пароль">
                 </div>
-                <div class="input-group hidden" id="confirm-pass-group">
-                    <input type="password" id="auth-pass-confirm" placeholder="Повторите пароль">
-                </div>
-
                 <button class="btn-primary" onclick="handleAuth()">Войти</button>
-                <p class="toggle-auth" onclick="toggleAuthMode()">Нет аккаунта? Регистрация</p>
+                <p id="loading-text" style="margin-top:15px; font-size:12px; color: #aaa;">Подключение к базе данных...</p>
             </div>
         </section>
 
         <main id="main-app" class="hidden">
-            
             <header class="glass-header">
                 <div class="user-info">
                     <div class="avatar" id="user-avatar"></div>
@@ -60,23 +58,18 @@
 
             <nav class="glass-nav">
                 <div class="desktop-logo">McSkill Shop</div>
-
                 <button class="nav-btn active" onclick="showScreen('shop')">
-                    <i class="fa-solid fa-store"></i>
-                    <span>Магазин</span>
+                    <i class="fa-solid fa-store"></i><span>Магазин</span>
                 </button>
                 <button class="nav-btn" onclick="showScreen('users')">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Состав</span>
+                    <i class="fa-solid fa-users"></i><span>Состав</span>
                 </button>
                 <button class="nav-btn" onclick="showScreen('logs')">
-                    <i class="fa-solid fa-scroll"></i>
-                    <span>Логи</span>
+                    <i class="fa-solid fa-scroll"></i><span>Логи</span>
                 </button>
-                
-                <div class="spacer"></div> <button class="nav-btn logout" onclick="logout()">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    <span>Выход</span>
+                <div class="spacer"></div>
+                <button class="nav-btn logout" onclick="logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Выход</span>
                 </button>
             </nav>
 
@@ -87,21 +80,25 @@
                 </section>
 
                 <section id="users-screen" class="content-screen hidden">
-                    <h2 class="screen-title">Персонал проекта</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h2 class="screen-title" style="margin:0;">Персонал</h2>
+                        <button id="btn-add-user" class="btn-icon hidden" onclick="openAddUserModal()">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </button>
+                    </div>
                     <div class="user-list" id="users-list-container"></div>
                 </section>
 
                 <section id="logs-screen" class="content-screen hidden">
-                    <h2 class="screen-title">История операций</h2>
+                    <h2 class="screen-title">История</h2>
                     <div class="logs-list" id="logs-container"></div>
                 </section>
 
                 <section id="admin-orders-screen" class="content-screen hidden">
-                    <h2 class="screen-title">Ожидают выдачи</h2>
+                    <h2 class="screen-title">Заявки</h2>
                     <div class="orders-list" id="orders-container"></div>
                 </section>
             </div>
-
         </main>
     </div>
 
@@ -116,15 +113,61 @@
         </div>
     </div>
 
-    <div id="modal-balance" class="modal hidden">
+    <div id="modal-user-edit" class="modal hidden">
         <div class="glass-card modal-content">
-            <h3>Изменить баланс</h3>
-            <p id="modal-target-user" style="margin-bottom: 10px; color: #aaa;"></p>
-            <input type="number" id="balance-amount" placeholder="Сумма (+ или -)">
-            <input type="text" id="balance-reason" placeholder="Причина (ЗП, Премия...)">
+            <h3 id="modal-target-user" style="margin-bottom:20px;">User</h3>
+            
+            <div class="edit-block">
+                <label>Изменить баланс</label>
+                <input type="number" id="balance-amount" placeholder="Сумма (+ или -)">
+                <input type="text" id="balance-reason" placeholder="Причина изменения" style="margin-top:5px;">
+            </div>
+
+            <div class="edit-block">
+                <label>Изменить роль</label>
+                <select id="role-select" class="glass-select">
+                    <option value="НеАдмин">НеАдмин</option>
+                    <option value="Строитель">Строитель</option>
+                    <option value="Дизайнер">Дизайнер</option>
+                    <option value="Модератор">Модератор</option>
+                    <option value="Тех. Админ">Тех. Админ</option>
+                    <option value="Куратор">Куратор</option>
+                    <option value="Гл. Модератор">Гл. Модератор</option>
+                </select>
+            </div>
+
+            <div class="modal-actions" style="flex-direction: column; gap: 10px;">
+                <button class="btn-primary" onclick="submitUserChanges()">Сохранить изменения</button>
+                <button class="btn-danger" onclick="deleteUser()">Удалить сотрудника</button>
+                <button class="btn-cancel" onclick="closeModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-add-user" class="modal hidden">
+        <div class="glass-card modal-content">
+            <h3 style="margin-bottom:15px;">Новый сотрудник</h3>
+            <input type="text" id="new-user-nick" placeholder="Никнейм">
+            <input type="password" id="new-user-pass" placeholder="Пароль" style="margin-top:10px;">
+            
+            <select id="new-user-role" class="glass-select" style="margin-top:10px;">
+                <option value="Модератор">Модератор</option>
+                <option value="Строитель">Строитель</option>
+                <option value="Дизайнер">Дизайнер</option>
+                <option value="НеАдмин">НеАдмин</option>
+                <option value="Тех. Админ">Тех. Админ</option>
+                <option value="Куратор">Куратор</option>
+                <option value="Гл. Модератор">Гл. Модератор</option>
+            </select>
+
+            <div style="margin-top:15px; display:flex; gap:10px; align-items:center; justify-content:center;">
+                <input type="checkbox" id="new-user-admin" style="width:20px; height:20px;">
+                <label for="new-user-admin" style="color:white; font-size:14px;">Дать права Админа</label>
+            </div>
+
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal()">Отмена</button>
-                <button class="btn-primary" onclick="submitBalanceChange()">Сохранить</button>
+                <button class="btn-primary" onclick="submitNewUser()">Создать</button>
             </div>
         </div>
     </div>
